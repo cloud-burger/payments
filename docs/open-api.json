@@ -1,0 +1,290 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "description": "Api responsible for managing customer orders from the Cloud Burger restaurant",
+    "version": "1.0.0",
+    "title": "Self Service",
+    "contact": {
+      "name": "Cloud Burger Support",
+      "email": "support@cloud-burger.com"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8080",
+      "description": "Local running"
+    }
+  ],
+  "paths": {
+    "/{id}": {
+      "get": {
+        "tags": ["Payment"],
+        "summary": "Find payment by order id",
+        "description": "API responsible for finding payment by order id",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/FindPaymentByOrderId"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/": {
+      "post": {
+        "tags": ["Payment"],
+        "summary": "Create payment",
+        "description": "API responsible for creating payment",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePaymentRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/CreatePayment"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "parameters": {
+      "Id": {
+        "in": "path",
+        "name": "id",
+        "schema": {
+          "$ref": "#/components/schemas/Id"
+        },
+        "required": true
+      },
+      "XIdentification": {
+        "in": "header",
+        "name": "x-identification",
+        "schema": {
+          "$ref": "#/components/schemas/DocumentNumber"
+        },
+        "required": false
+      },
+      "DocumentNumber": {
+        "in": "path",
+        "name": "documentNumber",
+        "schema": {
+          "$ref": "#/components/schemas/DocumentNumber"
+        },
+        "required": true
+      }
+    },
+    "responses": {
+      "FindPaymentByOrderId": {
+        "description": "Payment found",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/FindPaymentResponse"
+            }
+          }
+        }
+      },
+      "CreatePayment": {
+        "description": "Payment created",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/PaymentResponse"
+            }
+          }
+        }
+      },
+      "NoContent": {
+        "description": "No Content"
+      },
+      "BadRequest": {
+        "description": "Bad Request",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/BadRequestErrorResponse"
+            }
+          }
+        }
+      },
+      "ConflictError": {
+        "description": "Conflic Error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ConflictErrorResponse"
+            }
+          }
+        }
+      },
+      "NotFound": {
+        "description": "Not Found",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/NotFoundErrorResponse"
+            }
+          }
+        }
+      },
+      "InternalServerError": {
+        "description": "Bad Request",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/InternalServerErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "Id": {
+        "type": "string",
+        "example": "297d3ea7-610d-4c46-85f8-e3cb2fa4dd83",
+        "description": "Identifier"
+      },
+      "DocumentNumber": {
+        "type": "string",
+        "example": "53523992060",
+        "description": "Customer document number"
+      },
+      "PaymentStatus": {
+        "type": "string",
+        "enum": ["WAITING_PAYMENT", "PAID", "CANCELED"],
+        "description": "Payment status",
+        "example": "PAID"
+      },
+      "Emv": {
+        "type": "string",
+        "description": "Pix copia e cola",
+        "example": "00020101021243650016COM.MERCADOLIBRE0201306364a9e4780-d0a6-42e8-98d7-f6805209d83a5204000053039865802BR5909Test Test6009SAO PAULO62070503***63041A36"
+      },
+      "Amount": {
+        "type": "string",
+        "example": "R$ 19,99",
+        "description": "Amount"
+      },
+      "Reason": {
+        "type": "string",
+        "example": "Error reason"
+      },
+      "PaymentResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/Id"
+          },
+          "amount": {
+            "$ref": "#/components/schemas/Amount"
+          },
+          "status": {
+            "$ref": "#/components/schemas/PaymentStatus"
+          },
+          "orderId": {
+            "$ref": "#/components/schemas/Id"
+          },
+          "emv": {
+            "$ref": "#/components/schemas/Emv"
+          }
+        }
+      },
+      "FindPaymentResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/Id"
+          },
+          "status": {
+            "$ref": "#/components/schemas/PaymentStatus"
+          }
+        }
+      },
+      "NotFoundErrorResponse": {
+        "type": "object",
+        "properties": {
+          "reason": {
+            "$ref": "#/components/schemas/Reason"
+          }
+        }
+      },
+      "InternalServerErrorResponse": {
+        "type": "object",
+        "properties": {
+          "reason": {
+            "$ref": "#/components/schemas/Reason"
+          }
+        }
+      },
+      "ConflictErrorResponse": {
+        "type": "object",
+        "properties": {
+          "reason": {
+            "$ref": "#/components/schemas/Reason"
+          }
+        }
+      },
+      "BadRequestErrorResponse": {
+        "type": "object",
+        "properties": {
+          "reason": {
+            "$ref": "#/components/schemas/Reason"
+          },
+          "invalidParams": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "description": "Field name",
+                  "example": "amount"
+                },
+                "value": {
+                  "type": "string",
+                  "description": "Field value",
+                  "example": "1"
+                },
+                "reason": {
+                  "type": "string",
+                  "description": "Invalid param reason",
+                  "example": "Parameter number failed custom validation because is invalid"
+                }
+              }
+            }
+          }
+        }
+      },
+      "CreatePaymentRequest": {
+        "type": "object",
+        "properties": {
+          "orderId": {
+            "$ref": "#/components/schemas/Id"
+          }
+        }
+      }
+    }
+  }
+}

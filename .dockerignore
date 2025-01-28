@@ -1,0 +1,7 @@
+*/node_modules
+*/iac
+*/migrations
+*/scripts
+README.md
+compose.yaml
+Dockerfile

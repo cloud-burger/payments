@@ -1,0 +1,24 @@
+services:
+  app:
+    container_name: customers
+    build: .
+    depends_on:
+      - dynamodb
+    ports:
+      - '${PORT}:${PORT}'
+    restart: always
+    environment:
+      DYNAMO_TABLE_CUSTOMERS: customers
+      PORT: ${PORT}
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+    command: dynamodb describe-limits --endpoint-url http://dynamodb-local:8000 --region us-east-1
+  dynamodb:
+    command: '-jar DynamoDBLocal.jar -sharedDb -dbPath ./data'
+    image: 'amazon/dynamodb-local:latest'
+    container_name: dynamodb-local
+    ports:
+      - '8000:8000'
+    volumes:
+      - './docker/dynamodb:/home/dynamodblocal/data'
+    working_dir: /home/dynamodblocal
