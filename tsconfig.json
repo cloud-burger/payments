@@ -1,0 +1,33 @@
+{
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "test", "dist"],
+  "compilerOptions": {
+    "module": "commonjs",
+    "declaration": true,
+    "allowSyntheticDefaultImports": true,
+    "target": "ES2021",
+    "sourceMap": true,
+    "outDir": "./dist",
+    "baseUrl": "./src",
+    "strictPropertyInitialization": false,
+    "noImplicitAny": false,
+    "strictBindCallApply": false,
+    "forceConsistentCasingInFileNames": false,
+    "noFallthroughCasesInSwitch": false,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "incremental": true,
+    "tsBuildInfoFile": "./dist/tsconfig.tsbuildinfo",
+    "resolveJsonModule": true,
+    "paths": {
+      "~/api/*": ["./api/*"],
+      "~/controllers/*": ["./adapters/controllers/*"],
+      "~/presenters/*": ["./adapters/presenters/*"],
+      "~/domain/*": ["./domain/*"],
+      "~/infrastructure/*": ["./infrastructure/*"],
+      "~/use-cases/*": ["./application/use-cases/*"]
+    },
+    "types": ["jest", "node", "express"],
+    "typeRoots": ["node_modules/@types"]
+  }
+}
