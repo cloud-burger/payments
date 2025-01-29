@@ -1,8 +1,9 @@
-import { ConflictError } from '@cloud-burger/handlers';
+import { ConflictError, NotFoundError } from '@cloud-burger/handlers';
 import logger from '@cloud-burger/logger';
 import { Payment } from '~/domain/payment/entities/payment';
 import { PaymentStatus } from '~/domain/payment/entities/value-objects/enums/payment-status';
 import { PaymentRepository } from '~/domain/payment/repositories/payment';
+import { OrderService } from '~/domain/payment/services/orders';
 import { PaymentService } from '~/domain/payment/services/payment';
 
 interface Input {
@@ -13,6 +14,7 @@ export class CreatePaymentUseCase {
   constructor(
     private paymentService: PaymentService,
     private paymentRepository: PaymentRepository,
+    private ordersService: OrderService,
   ) {}
 
   async execute({ orderId }: Input): Promise<Payment> {
@@ -38,25 +40,21 @@ export class CreatePaymentUseCase {
       return existentPayment;
     }
 
-    // orderService.findById() ->> orders api | sync
+    const order = await this.ordersService.findById(orderId);
 
-    // const order = null;
+    if (!order) {
+      logger.warn({
+        message: 'Order not found',
+        data: { orderId },
+      });
 
-    // if (!order) {
-    //   logger.warn({
-    //     message: 'Order not found',
-    //     data: { orderId },
-    //   });
-
-    //   throw new NotFoundError('Order not found');
-    // }
+      throw new NotFoundError('Order not found');
+    }
 
     const payment = await this.paymentService.create(
       new Payment({
-        amount: 10, // mocked
-        order: {
-          id: '123', //mocked
-        },
+        amount: order.amount,
+        order: order,
       }),
     );
 

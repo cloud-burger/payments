@@ -9,12 +9,14 @@ import { CreatePaymentController } from '~/controllers/create';
 import { PaymentService } from '~/domain/payment/services/payment';
 import { PaymentRepository } from '~/infrastructure/database/payment-repository';
 import { MercadoPagoService } from '~/infrastructure/service/mercado-pago/mercado-pago-service';
+import { OrdersService } from '~/infrastructure/service/orders/orders-service';
 import { CreatePaymentUseCase } from '~/use-cases/create';
 
 let pool: Pool;
 let paymentRepository: PaymentRepository;
 let createPaymentUseCase: CreatePaymentUseCase;
 let paymentServices: PaymentService;
+let ordersService: OrdersService;
 let createPaymentController: CreatePaymentController;
 let apiHandler: ApiHandler;
 
@@ -24,9 +26,11 @@ const setDependencies = (connection: Connection) => {
     env.MERCADO_PAGO_CREATE_QR_API_URL,
     env.MERCADO_PAGO_API_TOKEN,
   );
+  ordersService = new OrdersService(env.ORDERS_URL);
   createPaymentUseCase = new CreatePaymentUseCase(
     paymentServices,
     paymentRepository,
+    ordersService,
   );
   createPaymentController = new CreatePaymentController(createPaymentUseCase);
   apiHandler = new ApiHandler(createPaymentController.handler);

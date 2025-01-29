@@ -27,6 +27,7 @@ const setDependencies = (connection: Connection) => {
   processEventUseCase = new ProcessEventUseCase(
     paymentService,
     paymentRepository,
+    env.UPDATE_ORDER_STATUS_QUEUE_URL,
   );
   eventController = new EventController(processEventUseCase);
   apiHandler = new ApiHandler(eventController.handler);

@@ -1,24 +1,38 @@
 services:
   app:
-    container_name: customers
+    container_name: payments
     build: .
     depends_on:
-      - dynamodb
+      - db
     ports:
       - '${PORT}:${PORT}'
     restart: always
     environment:
-      DYNAMO_TABLE_CUSTOMERS: customers
+      DATABASE_HOST: ${DATABASE_HOST}
+      DATABASE_USERNAME: ${DATABASE_USERNAME}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+      DATABASE_PORT: ${DATABASE_PORT}
+      DATABASE_NAME: ${DATABASE_NAME}
+      DATABASE_CONNECTION_TIMEOUT: ${DATABASE_CONNECTION_TIMEOUT}
       PORT: ${PORT}
-      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
-      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
-    command: dynamodb describe-limits --endpoint-url http://dynamodb-local:8000 --region us-east-1
-  dynamodb:
-    command: '-jar DynamoDBLocal.jar -sharedDb -dbPath ./data'
-    image: 'amazon/dynamodb-local:latest'
-    container_name: dynamodb-local
-    ports:
-      - '8000:8000'
+      MERCADO_PAGO_CREATE_QR_API_URL: ${MERCADO_PAGO_CREATE_QR_API_URL}
+      MERCADO_PAGO_GET_QR_INFO_API_URL: ${MERCADO_PAGO_GET_QR_INFO_API_URL}
+      MERCADO_PAGO_API_TOKEN: ${MERCADO_PAGO_API_TOKEN}
+      NOTIFICATION_WEBHOOK_URL: ${NOTIFICATION_WEBHOOK_URL}
+      ORDERS_URL: ${ORDERS_URL}
+      UPDATE_ORDER_STATUS_QUEUE_URL: ${UPDATE_ORDER_STATUS_QUEUE_URL}
+  db:
+    container_name: postgres
+    image: postgres:16
+    shm_size: 128mb
     volumes:
-      - './docker/dynamodb:/home/dynamodblocal/data'
-    working_dir: /home/dynamodblocal
+      - type: tmpfs
+        target: /dev/shm
+        tmpfs:
+          size: 134217728 # 128*2^20 bytes = 128Mb
+      - ./migrations/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
