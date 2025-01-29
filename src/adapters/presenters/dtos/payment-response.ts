@@ -2,7 +2,7 @@ import { PaymentStatus } from '~/domain/payment/entities/value-objects/enums/pay
 
 export interface PaymentResponse {
   id: string;
-  amount: string;
+  amount: number;
   status: PaymentStatus;
   orderId: string;
   emv: string;
