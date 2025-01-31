@@ -13,8 +13,8 @@ const PORT = +env.PORT;
 const router = Router();
 
 // Payment
-router.get('/payment/:orderId', getPaymentStatusByOrderId);
-router.post('/payment', createPayment);
+router.get('/payments/:orderId', getPaymentStatusByOrderId);
+router.post('/payments', createPayment);
 
 // Webhook
 router.post('/webhook', webhook);

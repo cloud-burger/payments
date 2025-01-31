@@ -16,7 +16,7 @@
     }
   ],
   "paths": {
-    "/{id}": {
+    "/payments/{id}": {
       "get": {
         "tags": ["Payment"],
         "summary": "Find payment by order id",
@@ -39,7 +39,7 @@
         }
       }
     },
-    "/": {
+    "/payments": {
       "post": {
         "tags": ["Payment"],
         "summary": "Create payment",
