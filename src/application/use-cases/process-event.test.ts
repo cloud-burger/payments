@@ -1,21 +1,29 @@
+import { sendMessage } from '@cloud-burger/aws-wrappers';
 import { mock, MockProxy } from 'jest-mock-extended';
 import { makePayment } from 'tests/factories/make-payment';
 import { PaymentStatus } from '~/domain/payment/entities/value-objects/enums/payment-status';
+import { PaymentPublisher } from '~/domain/payment/publisher/payment';
 import { PaymentRepository } from '~/domain/payment/repositories/payment';
 import { PaymentService } from '~/domain/payment/services/payment';
 import { ProcessEventUseCase } from './process-event';
 
+jest.mock('@cloud-burger/aws-wrappers');
+
 describe('process event use case', () => {
+  const sendMessageMock = jest.mocked(sendMessage);
   let paymentService: MockProxy<PaymentService>;
   let paymentRepository: MockProxy<PaymentRepository>;
+  let paymentPublisher: MockProxy<PaymentPublisher>;
   let processEventUseCase: ProcessEventUseCase;
 
   beforeAll(() => {
     paymentService = mock();
     paymentRepository = mock();
+    paymentPublisher = mock();
     processEventUseCase = new ProcessEventUseCase(
       paymentService,
       paymentRepository,
+      paymentPublisher,
     );
   });
 
@@ -29,12 +37,14 @@ describe('process event use case', () => {
     expect(paymentService.findByExternalId).toHaveBeenNthCalledWith(1, '12345');
     expect(paymentRepository.findById).not.toHaveBeenCalled();
     expect(paymentRepository.update).not.toHaveBeenCalled();
+    expect(sendMessageMock).not.toHaveBeenCalled();
   });
 
   it('should process event successfully', async () => {
     paymentService.findByExternalId.mockResolvedValue(
       makePayment({ externalId: 12345 }),
     );
+    paymentRepository.findById.mockResolvedValue(makePayment());
 
     await processEventUseCase.execute({
       externalId: '12345',
@@ -51,31 +61,12 @@ describe('process event use case', () => {
       externalId: 12345,
       id: 'eba521ba-f6b7-46b5-ab5f-dd582495705e',
       order: {
-        amount: 20.99,
-        customer: {
-          documentNumber: '53523992060',
-          email: 'johndue@gmail.com',
-          id: 'eba521ba-f6b7-46b5-ab5f-dd582495705e',
-          name: 'John Due',
-        },
         id: 'eba521ba-f6b7-46b5-ab5f-dd582495705e',
-        number: 123,
-        products: [
-          {
-            amount: 20.99,
-            category: 'BURGER',
-            description:
-              'Hambúrguer com bacon crocante, queijo cheddar e molho barbecue.',
-            name: 'Bacon Burger',
-            notes: 'Sem bacon',
-            quantity: 1,
-          },
-        ],
-        status: 'RECEIVED',
       },
       status: 'WAITING_PAYMENT',
       updatedAt: expect.any(Date),
     });
+    expect(sendMessageMock).not.toHaveBeenCalled();
   });
 
   it('should process payment event successfully', async () => {
@@ -98,30 +89,19 @@ describe('process event use case', () => {
       externalId: 12345,
       id: 'eba521ba-f6b7-46b5-ab5f-dd582495705e',
       order: {
-        amount: 20.99,
-        customer: {
-          documentNumber: '53523992060',
-          email: 'johndue@gmail.com',
-          id: 'eba521ba-f6b7-46b5-ab5f-dd582495705e',
-          name: 'John Due',
-        },
         id: 'eba521ba-f6b7-46b5-ab5f-dd582495705e',
-        number: 123,
-        products: [
-          {
-            amount: 20.99,
-            category: 'BURGER',
-            description:
-              'Hambúrguer com bacon crocante, queijo cheddar e molho barbecue.',
-            name: 'Bacon Burger',
-            notes: 'Sem bacon',
-            quantity: 1,
-          },
-        ],
-        status: 'RECEIVED',
       },
       status: 'PAID',
       updatedAt: expect.any(Date),
+    });
+    expect(paymentPublisher.processPayment).toHaveBeenNthCalledWith(1, {
+      amount: 20.99,
+      createdAt: new Date('2024-07-12T22:18:26.351Z'),
+      externalId: 12345,
+      id: 'eba521ba-f6b7-46b5-ab5f-dd582495705e',
+      order: { id: 'eba521ba-f6b7-46b5-ab5f-dd582495705e' },
+      status: 'PAID',
+      updatedAt: new Date('2024-07-12T22:18:26.351Z'),
     });
   });
 });
