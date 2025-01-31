@@ -1,6 +1,6 @@
-import { sendMessage } from '@cloud-burger/aws-wrappers';
 import logger from '@cloud-burger/logger';
 import { PaymentStatus } from '~/domain/payment/entities/value-objects/enums/payment-status';
+import { PaymentPublisher } from '~/domain/payment/publisher/payment';
 import { PaymentRepository } from '~/domain/payment/repositories/payment';
 import { PaymentService } from '~/domain/payment/services/payment';
 
@@ -12,7 +12,7 @@ export class ProcessEventUseCase {
   constructor(
     private paymentService: PaymentService,
     private paymentRepository: PaymentRepository,
-    private updateOrderStatusQueueUrl: string,
+    private paymentPublisher: PaymentPublisher,
   ) {}
 
   async execute({ externalId }: Input): Promise<void> {
@@ -38,10 +38,7 @@ export class ProcessEventUseCase {
       if (externalPayment.status === PaymentStatus.PAID) {
         logger.debug('Update order status');
 
-        await sendMessage({
-          MessageBody: JSON.stringify(externalPayment),
-          QueueUrl: this.updateOrderStatusQueueUrl,
-        });
+        await this.paymentPublisher.processPayment(externalPayment);
       }
     } catch (error) {
       logger.error({

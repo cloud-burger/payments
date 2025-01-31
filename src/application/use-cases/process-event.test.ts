@@ -2,6 +2,7 @@ import { sendMessage } from '@cloud-burger/aws-wrappers';
 import { mock, MockProxy } from 'jest-mock-extended';
 import { makePayment } from 'tests/factories/make-payment';
 import { PaymentStatus } from '~/domain/payment/entities/value-objects/enums/payment-status';
+import { PaymentPublisher } from '~/domain/payment/publisher/payment';
 import { PaymentRepository } from '~/domain/payment/repositories/payment';
 import { PaymentService } from '~/domain/payment/services/payment';
 import { ProcessEventUseCase } from './process-event';
@@ -12,15 +13,17 @@ describe('process event use case', () => {
   const sendMessageMock = jest.mocked(sendMessage);
   let paymentService: MockProxy<PaymentService>;
   let paymentRepository: MockProxy<PaymentRepository>;
+  let paymentPublisher: MockProxy<PaymentPublisher>;
   let processEventUseCase: ProcessEventUseCase;
 
   beforeAll(() => {
     paymentService = mock();
     paymentRepository = mock();
+    paymentPublisher = mock();
     processEventUseCase = new ProcessEventUseCase(
       paymentService,
       paymentRepository,
-      'sqs.com/update-order-status-queue-url',
+      paymentPublisher,
     );
   });
 
@@ -91,17 +94,14 @@ describe('process event use case', () => {
       status: 'PAID',
       updatedAt: expect.any(Date),
     });
-    expect(sendMessageMock).toHaveBeenNthCalledWith(1, {
-      MessageBody: JSON.stringify({
-        id: 'eba521ba-f6b7-46b5-ab5f-dd582495705e',
-        amount: 20.99,
-        status: 'PAID',
-        order: { id: 'eba521ba-f6b7-46b5-ab5f-dd582495705e' },
-        createdAt: '2024-07-12T22:18:26.351Z',
-        updatedAt: '2024-07-12T22:18:26.351Z',
-        externalId: 12345,
-      }),
-      QueueUrl: 'sqs.com/update-order-status-queue-url',
+    expect(paymentPublisher.processPayment).toHaveBeenNthCalledWith(1, {
+      amount: 20.99,
+      createdAt: new Date('2024-07-12T22:18:26.351Z'),
+      externalId: 12345,
+      id: 'eba521ba-f6b7-46b5-ab5f-dd582495705e',
+      order: { id: 'eba521ba-f6b7-46b5-ab5f-dd582495705e' },
+      status: 'PAID',
+      updatedAt: new Date('2024-07-12T22:18:26.351Z'),
     });
   });
 });

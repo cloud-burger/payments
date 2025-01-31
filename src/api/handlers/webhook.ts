@@ -8,12 +8,14 @@ import { PoolFactory } from '~/api/postgres/pool-factory';
 import { EventController } from '~/controllers/event';
 import { PaymentService } from '~/domain/payment/services/payment';
 import { PaymentRepository } from '~/infrastructure/database/payment-repository';
+import { SqsPaymentPublisher } from '~/infrastructure/queue/sqs/payment/payment-publisher';
 import { MercadoPagoService } from '~/infrastructure/service/mercado-pago/mercado-pago-service';
 import { ProcessEventUseCase } from '~/use-cases/process-event';
 
 let pool: Pool;
 let paymentService: PaymentService;
 let paymentRepository: PaymentRepository;
+let paymentPublisher: SqsPaymentPublisher;
 let processEventUseCase: ProcessEventUseCase;
 let eventController: EventController;
 let apiHandler: ApiHandler;
@@ -24,10 +26,11 @@ const setDependencies = (connection: Connection) => {
     env.MERCADO_PAGO_API_TOKEN,
   );
   paymentRepository = new PaymentRepository(connection);
+  paymentPublisher = new SqsPaymentPublisher(env.UPDATE_ORDER_STATUS_QUEUE_URL);
   processEventUseCase = new ProcessEventUseCase(
     paymentService,
     paymentRepository,
-    env.UPDATE_ORDER_STATUS_QUEUE_URL,
+    paymentPublisher,
   );
   eventController = new EventController(processEventUseCase);
   apiHandler = new ApiHandler(eventController.handler);
