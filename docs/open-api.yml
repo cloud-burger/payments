@@ -11,7 +11,7 @@ servers:
   - url: http://localhost:8080
     description: Local running
 paths:
-  /{id}:
+  /payments/{id}:
     get:
       tags:
         - Payment
@@ -26,7 +26,7 @@ paths:
           $ref: "#/components/responses/NotFound"
         "500":
           $ref: "#/components/responses/InternalServerError"
-  /:
+  /payments:
     post:
       tags:
         - Payment

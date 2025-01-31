@@ -15,7 +15,7 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "http://api.cloudburger.com.br/:orderId",
+              "raw": "http://api.cloudburger.com.br/payments/:orderId",
               "protocol": "http",
               "host": ["api", "cloudburger", "com", "br"],
               "path": [":orderId"],
@@ -44,7 +44,7 @@
               }
             },
             "url": {
-              "raw": "http://api.cloudburger.com.br/",
+              "raw": "http://api.cloudburger.com.br/payments",
               "protocol": "http",
               "host": ["api", "cloudburger", "com", "br"],
               "path": [""]
