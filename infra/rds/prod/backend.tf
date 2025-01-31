@@ -1,5 +1,5 @@
 provider "aws" {
-  region = module.global_variables.aws_region
+  region = "us-east-1"
 }
 
 data "terraform_remote_state" "eks_state" {
