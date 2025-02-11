@@ -3,7 +3,7 @@ import { createRequest, createResponse } from 'node-mocks-http';
 import Connection from '~/api/postgres/connection';
 import Pool from '~/api/postgres/pool';
 import { PoolFactory } from '~/api/postgres/pool-factory';
-import { createPayment } from './create';
+import { webhook } from './webhook';
 
 jest.mock('~/api/postgres/connection');
 jest.mock('~/api/postgres/pool');
@@ -23,6 +23,6 @@ describe('event handler', () => {
     const req = createRequest();
     const res = createResponse();
 
-    await createPayment(req, res);
+    await webhook(req, res);
   });
 });

@@ -17,7 +17,7 @@ jobs:
   ci:
     name: CI Pipeline
     runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request'
+    if: ${{ github.event_name == 'pull_request' || github.event_name == 'push' }}
 
     steps:
       - name: Checkout code
@@ -36,6 +36,11 @@ jobs:
 
       - name: Running tests
         run: npm run test
+      
+      - name: SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@v4
+        env:
+          SONAR_TOKEN: ${{ secrets. SONARCLOUD_TOKEN }}
 
   build-and-deploy:
     name: Continuous Delivery Pipeline
