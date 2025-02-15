@@ -16,7 +16,7 @@ spec:
         app: self-service-payments
     spec:
       containers:
-        - image: 594646746001.dkr.ecr.us-east-1.amazonaws.com/self-service-payments:0.1.0
+        - image: 594646746001.dkr.ecr.us-east-1.amazonaws.com/self-service-payments:latest
           name: self-service-payments
           ports:
             - name: http
