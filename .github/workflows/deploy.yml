@@ -103,3 +103,24 @@ jobs:
           git config --local user.name "GitHub Action"
           git tag ${{ steps.tagger.outputs.next_tag }}
           git push origin ${{ steps.tagger.outputs.next_tag }}
+
+  kubernetes_create_workload:
+    name: "Kubernetes Manifests Apply"
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch' && github.event.inputs.action == 'kubernetes_create_workload'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install kubectl
+        run: |
+          curl -LO "https://dl.k8s.io/release/$(curl -sSL https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+          chmod +x kubectl
+          sudo mv kubectl /usr/local/bin/
+
+      - name: Update kube config
+        run: aws eks update-kubeconfig --name infra-kubernetes-prd --region us-east-1
+
+      - name: Kubectl Apply
+        run: kubectl apply -f ./k8s/manifest.yaml
