@@ -8,6 +8,14 @@ on:
     types: [opened, synchronize, edited, reopened]
     branches:
       - main
+  workflow_dispatch:
+    inputs:
+      action:
+        required: true
+        type: choice
+        description: Kubernetes Action
+        options:
+          - kubernetes_create_workload
 
 env:
   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
