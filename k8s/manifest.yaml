@@ -34,7 +34,7 @@ spec:
             - name: DATABASE_PORT
               value: "5432"
             - name: DATABASE_NAME
-              value: self_service
+              value: payment
             - name: NOTIFICATION_WEBHOOK_URL
               value: "http://api.cloudburger.com.br/webhook"
             - name: MERCADO_PAGO_API_URL
@@ -46,11 +46,11 @@ spec:
             - name: MERCADO_PAGO_API_TOKEN
               value: "APP_USR-7785106356073680-091816-d1c29245fbb399a70031428b1c22463c-1995444195"
             - name: DATABASE_HOST
-              value: postgres.cf6esggi8qzc.us-east-1.rds.amazonaws.com
+              value: self-service-payments.cf6esggi8qzc.us-east-1.rds.amazonaws.com
             - name: DATABASE_USERNAME
-              value: self_service
+              value: payment
             - name: DATABASE_PASSWORD
-              value: self_service
+              value: payment
 ---
 apiVersion: v1
 kind: Service
