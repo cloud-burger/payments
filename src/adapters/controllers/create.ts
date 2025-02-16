@@ -12,7 +12,7 @@ import { CreatePaymentUseCase } from '~/use-cases/create';
 import { createPaymentSchema } from './validations/create-schema';
 
 export class CreatePaymentController {
-  constructor(private createPaymentUseCase: CreatePaymentUseCase) {}
+  constructor(private readonly createPaymentUseCase: CreatePaymentUseCase) {}
 
   handler: Controller = async (
     request: Request,
@@ -24,7 +24,7 @@ export class CreatePaymentController {
 
     const { data, errors } = validateSchema(createPaymentSchema, request.body);
 
-    const hasValidationErrors = errors && errors.length;
+    const hasValidationErrors = errors?.length;
 
     if (hasValidationErrors) {
       logger.warn({

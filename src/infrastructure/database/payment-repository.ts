@@ -10,7 +10,7 @@ import { INSERT_PAYMENT } from './queries/insert';
 import { UPDATE_PAYMENT } from './queries/update';
 
 export class PaymentRepository implements IPaymentRepository {
-  constructor(private connection: Connection) {}
+  constructor(private readonly connection: Connection) {}
 
   async findById(id: string): Promise<Payment | null> {
     const { records } = await this.connection.query({

@@ -5,7 +5,7 @@ import { ProcessEventUseCase } from '~/use-cases/process-event';
 const PAYMENT_ORDER_TOPIC = 'merchant_order';
 
 export class EventController {
-  constructor(private processEventUseCase: ProcessEventUseCase) {}
+  constructor(private readonly processEventUseCase: ProcessEventUseCase) {}
 
   handler: Controller = async (request: Request): Promise<Response<void>> => {
     logger.info({

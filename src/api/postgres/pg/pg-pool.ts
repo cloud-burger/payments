@@ -7,7 +7,7 @@ import { PgConnection } from './pg-connection';
 export class PgPool implements Pool {
   private static instance: PgPool;
 
-  private constructor(private pool: PostgresPool) {}
+  private constructor(private readonly pool: PostgresPool) {}
 
   public static async getPool(): Promise<PgPool> {
     if (this.instance) {

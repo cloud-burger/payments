@@ -10,9 +10,9 @@ interface Input {
 
 export class ProcessEventUseCase {
   constructor(
-    private paymentService: PaymentService,
-    private paymentRepository: PaymentRepository,
-    private paymentPublisher: PaymentPublisher,
+    private readonly paymentService: PaymentService,
+    private readonly paymentRepository: PaymentRepository,
+    private readonly paymentPublisher: PaymentPublisher,
   ) {}
 
   async execute({ externalId }: Input): Promise<void> {

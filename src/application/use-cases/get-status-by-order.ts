@@ -8,7 +8,7 @@ interface Input {
 }
 
 export class GetStatusByOrderUseCase {
-  constructor(private paymentRepository: PaymentRepository) {}
+  constructor(private readonly paymentRepository: PaymentRepository) {}
 
   async execute({ orderId }: Input): Promise<Payment> {
     const payment = await this.paymentRepository.findByOrderId(orderId);
