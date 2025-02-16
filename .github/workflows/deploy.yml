@@ -105,13 +105,6 @@ jobs:
       - name: Update kube deployment
         run: kubectl set image deployment/self-service-payments self-service-payments=$IMAGE_URI -n self-service
 
-      - name: Push new tag to GitHub
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git tag ${{ steps.tagger.outputs.next_tag }}
-          git push origin ${{ steps.tagger.outputs.next_tag }}
-
   kubernetes_create_workload:
     name: 'Kubernetes Manifests Apply'
     runs-on: ubuntu-latest
