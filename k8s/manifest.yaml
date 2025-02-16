@@ -36,7 +36,7 @@ spec:
             - name: DATABASE_NAME
               value: payment
             - name: NOTIFICATION_WEBHOOK_URL
-              value: "http://api.cloudburger.com.br/webhook"
+              value: "https://api.cloudburger.com.br/webhook"
             - name: MERCADO_PAGO_API_URL
               value: "https://api.mercadopago.com//instore/orders/qr/seller/collectors/1995444195/pos/SELFSERVICE2024/qrs"
             - name: MERCADO_PAGO_CREATE_QR_API_URL
