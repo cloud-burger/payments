@@ -105,7 +105,7 @@ spec:
     - name: self-service-payments
       match:
         - uri:
-            prefix: /payments/
+            prefix: /payments
       route:
         - destination:
             host: self-service-payments
