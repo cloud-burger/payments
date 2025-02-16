@@ -51,6 +51,10 @@ spec:
               value: payment
             - name: DATABASE_PASSWORD
               value: payment
+            - name: ORDERS_URL
+              value: "http://self-service-orders.svc.cluster.local/orders"
+            - name: UPDATE_ORDER_STATUS_QUEUE_URL
+              value: "https://sqs.us-east-1.amazonaws.com/594646746001/self-service-orders-process-order-payment-queue"
 ---
 apiVersion: v1
 kind: Service
