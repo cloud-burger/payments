@@ -38,7 +38,7 @@ export class ProcessEventUseCase {
       if (externalPayment.status === PaymentStatus.PAID) {
         logger.debug('Update order status');
 
-        await this.paymentPublisher.processPayment(externalPayment);
+        await this.paymentPublisher.processPayment(payment);
       }
     } catch (error) {
       logger.error({
