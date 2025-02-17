@@ -4,7 +4,7 @@ import { PoolClient } from 'pg';
 import Connection, { QueryObject, QueryResult } from '../connection';
 
 export class PgConnection implements Connection {
-  private instance: PoolClient;
+  private readonly instance: PoolClient;
 
   constructor(instance: PoolClient) {
     this.instance = instance;

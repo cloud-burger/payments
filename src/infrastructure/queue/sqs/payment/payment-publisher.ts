@@ -3,7 +3,7 @@ import { Payment } from '~/domain/payment/entities/payment';
 import { PaymentPublisher } from '~/domain/payment/publisher/payment';
 
 export class SqsPaymentPublisher implements PaymentPublisher {
-  constructor(private updateOrderStatusQueueUrl: string) {}
+  constructor(private readonly updateOrderStatusQueueUrl: string) {}
 
   async processPayment(payment: Payment): Promise<void> {
     await sendMessage({

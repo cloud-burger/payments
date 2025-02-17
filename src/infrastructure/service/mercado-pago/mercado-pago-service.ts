@@ -7,8 +7,8 @@ import { MercadoPagoMapper } from './mappers/mercado-pago-mapper';
 
 export class MercadoPagoService implements PaymentService {
   constructor(
-    private mercadoPagoUrl: string,
-    private mercadoPagoToken: string,
+    private readonly mercadoPagoUrl: string,
+    private readonly mercadoPagoToken: string,
   ) {}
 
   async create(payment: Payment): Promise<Payment> {

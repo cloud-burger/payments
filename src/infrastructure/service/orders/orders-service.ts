@@ -4,7 +4,7 @@ import { OrderService } from '~/domain/payment/services/orders';
 import { FindOrderByIdResponse } from './dtos/find-order-by-id-response';
 
 export class OrdersService implements OrderService {
-  constructor(private ordersUrl: string) {}
+  constructor(private readonly ordersUrl: string) {}
 
   async findById(id: string): Promise<Order> {
     const { data } = await get<FindOrderByIdResponse>({

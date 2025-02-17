@@ -12,9 +12,9 @@ interface Input {
 
 export class CreatePaymentUseCase {
   constructor(
-    private paymentService: PaymentService,
-    private paymentRepository: PaymentRepository,
-    private ordersService: OrderService,
+    private readonly paymentService: PaymentService,
+    private readonly paymentRepository: PaymentRepository,
+    private readonly ordersService: OrderService,
   ) {}
 
   async execute({ orderId }: Input): Promise<Payment> {

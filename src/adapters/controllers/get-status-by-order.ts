@@ -5,7 +5,9 @@ import { GetPaymentStatusByOrderPresenter } from '~/presenters/get-payment-statu
 import { GetStatusByOrderUseCase } from '~/use-cases/get-status-by-order';
 
 export class GetStatusByOrderController {
-  constructor(private getStatusByOrderUseCase: GetStatusByOrderUseCase) {}
+  constructor(
+    private readonly getStatusByOrderUseCase: GetStatusByOrderUseCase,
+  ) {}
 
   handler: Controller = async (
     request: Request,
