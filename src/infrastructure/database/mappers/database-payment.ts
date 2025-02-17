@@ -7,11 +7,9 @@ export class DatabasePaymentMapper {
     return new Payment({
       id: paymentDbSchema.id,
       amount: paymentDbSchema.amount,
-      order: paymentDbSchema.order_id
-        ? {
-            id: paymentDbSchema.order_id,
-          }
-        : null,
+      order: {
+        id: paymentDbSchema.order_id,
+      },
       status: paymentDbSchema.status as PaymentStatus,
       emv: paymentDbSchema.emv,
       externalId: paymentDbSchema.external_id,
