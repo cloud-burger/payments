@@ -31,6 +31,10 @@ export class Payment extends Entity {
     Object.assign(this, input);
   }
 
+  setStatus(status: PaymentStatus) {
+    this.status = status;
+  }
+
   setExternalId(externalId: number) {
     this.externalId = externalId;
   }

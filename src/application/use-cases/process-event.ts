@@ -1,4 +1,5 @@
 import logger from '@cloud-burger/logger';
+import { Payment } from '~/domain/payment/entities/payment';
 import { PaymentStatus } from '~/domain/payment/entities/value-objects/enums/payment-status';
 import { PaymentPublisher } from '~/domain/payment/publisher/payment';
 import { PaymentRepository } from '~/domain/payment/repositories/payment';
@@ -30,15 +31,31 @@ export class ProcessEventUseCase {
         },
       });
 
-      payment.status = externalPayment.status;
+      payment.setStatus(externalPayment.status);
       payment.setExternalId(externalPayment.externalId);
 
       await this.paymentRepository.update(payment);
 
-      if (externalPayment.status === PaymentStatus.PAID) {
-        logger.debug('Update order status');
+      logger.debug({
+        message: 'Payment updated',
+        data: {
+          payment,
+          externalPayment,
+        },
+      });
 
-        await this.paymentPublisher.processPayment(payment);
+      if (externalPayment.status === PaymentStatus.PAID) {
+        logger.debug({
+          message: 'Update order status',
+          data: payment,
+        });
+
+        await this.paymentPublisher.processPayment(
+          new Payment({
+            ...externalPayment,
+            ...payment,
+          }),
+        );
       }
     } catch (error) {
       logger.error({
