@@ -110,6 +110,8 @@ spec:
       match:
         - uri:
             prefix: /payments
+        - uri:
+            prefix: /webhook
       route:
         - destination:
             host: self-service-payments
